@@ -1,0 +1,99 @@
+This repository contains two kinds of material under different terms:
+
+  Part 1  the source code, licensed under the MIT License;
+  Part 2  the PPGCosmo logo, which is NOT under an open license and may be
+          used only as described in the "PPGCosmo Logo Usage Terms" below.
+
+The MIT License in Part 1 covers the code only. It grants no rights to the
+logo itself, whether the logo appears in the image files of this repository
+or in output produced by running the code.
+
+
+==============================================================================
+Part 1 - Source code: MIT License
+==============================================================================
+
+Applies to: ppgcosmologo.sty, ppgcosmologo-demo.tex, make-images.sh
+
+Copyright (c) 2026 Davi C. Rodrigues
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+==============================================================================
+Part 2 - PPGCosmo Logo Usage Terms
+==============================================================================
+
+Applies to: the PPGCosmo logo design (the galaxy symbol together with the
+"PPGCosmo" lettering), all files in the images/ folder, ppgcosmologo-demo.pdf,
+and any image of the logo produced with the code in Part 1.
+
+The PPGCosmo logo was designed by Davi C. Rodrigues and is the official logo
+of the Programa de Pos-Graduacao em Astrofisica, Cosmologia e Gravitacao
+(PPGCosmo) of the Universidade Federal do Espirito Santo (UFES), Brazil.
+Its use is managed by the PPGCosmo coordination.
+
+All rights reserved, except as granted below.
+
+1. Permitted use
+
+   Anyone may use the logo, free of charge, to identify or refer to PPGCosmo,
+   for example in:
+     - theses, dissertations and other academic work by PPGCosmo students,
+       alumni, faculty and collaborators;
+     - scientific papers, talks, posters and slides;
+     - websites, news and social-media posts about the programme;
+     - materials of events organised or supported by PPGCosmo;
+     - institutional documents of PPGCosmo and UFES.
+
+2. Conditions
+
+   When using the logo you must:
+     - use one of the official variants: the image files in images/, or the
+       output of \ppgcosmologo with its default font and outline settings,
+       in any of the provided combinations of version, fontcolor and
+       background;
+     - scale it proportionally only, without stretching, distorting,
+       rotating, cropping, recolouring or rearranging its elements;
+     - not add elements to it, nor combine it with other logos or marks in a
+       way that forms a new composite mark.
+
+   The "font" and "outline width" options of ppgcosmologo.sty exist for
+   technical fallback (for example, when Open Sans is not installed). Logos
+   produced with non-default values of these options must not be presented
+   as the official PPGCosmo logo.
+
+3. Uses that require prior written permission
+
+   The following require prior written permission from the PPGCosmo
+   coordination:
+     - any commercial use, including merchandise and products for sale;
+     - any use that states or suggests endorsement, sponsorship or official
+       participation by PPGCosmo or UFES where there is none;
+     - modified or derived versions of the logo;
+     - use of the logo, or of elements of it, in another logo or trademark.
+
+   Contact: PPGCosmo coordination, pos.cosmo@ufes.br.
+
+4. General
+
+   These terms may be updated, and the logo may be revised, by the PPGCosmo
+   coordination. Permission to use the logo does
+   not transfer any copyright or other right in it. The logo is provided
+   "as is", without warranty of any kind.
