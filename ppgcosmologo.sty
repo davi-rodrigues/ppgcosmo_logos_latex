@@ -1,0 +1,185 @@
+%% ppgcosmologo.sty  --  the PPGCosmo logo drawn parametrically with TikZ
+%%
+%% Geometry (fitted to the original artwork):
+%%   * face-on galaxy: 6 identical arms, 60 deg apart; each arm is a
+%%     logarithmic spiral  r(phi) = R exp[(phi - phi_tip)/2]  (pitch atan(1/2)),
+%%     drawn with constant width over one full turn, plus a central core disk;
+%%   * colour: radial gradient, light blue in the centre, dark at the arm tips;
+%%   * the face-on galaxy is flattened (yscale 0.30) and tilted by 30 deg;
+%%   * the lettering "PPGCosmo" is set with a font and superimposed.
+%% All lengths are in units of the arm-tip radius R.
+%%
+%% Usage:  \usepackage{ppgcosmologo}   ...   \ppgcosmologo[<options>]
+%%   fontcolor     = black | white          (default black)
+%%   background    = white | black | none   (default white; none = transparent)
+%%   version       = large | short          (default large)
+%%   height        = <length>               (default 3cm large, 1cm short)
+%%   outline width = <number>               (in units of R; default: 0.006 when the
+%%                                           outline has the background colour (halo),
+%%                                           0.0025 otherwise)
+%%   font          = <font commands>        (default: Open Sans SemiBold Italic)
+%%
+%% Engines: LuaLaTeX or pdfLaTeX (XeLaTeX works but without the outline).
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ppgcosmologo}[2026/11/19 v2.1 PPGCosmo logo, parametric TikZ]
+\RequirePackage{tikz}
+\RequirePackage{pdfrender}
+\RequirePackage{iftex}
+
+%% ------------------------------------------------------------ parameters
+\def\ppgcosmo@tilt{30}          % tilt of the galaxy major axis (deg)
+\def\ppgcosmo@flat{0.30}        % axis ratio after flattening (cos i)
+\def\ppgcosmo@cx{0.7910}        % galaxy centre in the logo canvas
+\def\ppgcosmo@cy{0.3888}
+\def\ppgcosmo@tip{31.76}        % angle of the tip of arm 0 (deg, face-on frame)
+\def\ppgcosmo@turn{360}         % angular length of each arm (deg)
+\def\ppgcosmo@hw{0.0330}        % half width of an arm
+\def\ppgcosmo@core{0.1553}      % radius of the central disk
+\def\ppgcosmo@W{1.2385}         % canvas of the large version
+\def\ppgcosmo@H{0.7765}
+% lettering: the ink of "PPGCosmo" spans x = 0.0407 ... 1.1808, baseline y = 0.334.
+% For Open Sans SemiBold Italic this means: text box left edge and box width
+\def\ppgcosmo@tl{0.0325}\def\ppgcosmo@tw{1.1600}\def\ppgcosmo@tb{0.3340}
+
+\definecolor{ppgcosmo@L}{RGB}{116, 186, 255}
+%\definecolor{ppgcosmo@L}{RGB}{149,193,253}  % centre (light blue)
+\definecolor{ppgcosmo@D}{RGB}{14,17,21}     % arm tips, white background
+\definecolor{ppgcosmo@DK}{RGB}{84,100,128}  % arm tips, black background
+
+% radial gradient; the shaded circle has radius 1.2 R, i.e. 50bp <-> 1.2 R.
+% light up to r = 0.282 R, dark from r = 0.915 R (fitted profile).
+\pgfdeclareradialshading{ppgcosmo@shadeW}{\pgfpointorigin}{%
+  color(0bp)=(ppgcosmo@L); color(11.75bp)=(ppgcosmo@L);
+  color(24.94bp)=(ppgcosmo@L!45.4!ppgcosmo@D);
+  color(38.13bp)=(ppgcosmo@D); color(50bp)=(ppgcosmo@D)}
+\pgfdeclareradialshading{ppgcosmo@shadeK}{\pgfpointorigin}{%
+  color(0bp)=(ppgcosmo@L); color(11.75bp)=(ppgcosmo@L);
+  color(24.94bp)=(ppgcosmo@L!45.4!ppgcosmo@DK);
+  color(38.13bp)=(ppgcosmo@DK); color(50bp)=(ppgcosmo@DK)}
+
+%% ------------------------------------------------------------ font
+%% Official font: Open Sans SemiBold Italic, from the TeX Live package "opensans"
+%% (OpenSans-SemiBoldItalic.ttf for LuaLaTeX/XeLaTeX; NFSS opensans-TLF/sb/it
+%% for pdfLaTeX). Fallback, with a warning: TeX Gyre Heros / Helvetica italic.
+\ifluatex\def\ppgcosmo@usefontspec{}\fi
+\ifxetex\def\ppgcosmo@usefontspec{}%
+  \PackageWarningNoLine{ppgcosmologo}{XeLaTeX: the outline/halo of the lettering
+    needs pdfLaTeX or LuaLaTeX and is omitted}\fi
+\ifdefined\ppgcosmo@usefontspec
+  \RequirePackage{fontspec}
+  \IfFontExistsTF{OpenSans-SemiBoldItalic.ttf}
+    {\newfontface\ppgcosmo@ff{OpenSans-SemiBoldItalic.ttf}}
+    {\PackageWarningNoLine{ppgcosmologo}{OpenSans-SemiBoldItalic.ttf not found
+       (install the TeX Live package opensans); using TeX Gyre Heros}%
+     \newfontface\ppgcosmo@ff{texgyreheros-italic.otf}}
+  \def\ppgcosmo@defaultfont{\ppgcosmo@ff}
+\else
+  \IfFileExists{T1opensans-TLF.fd}
+    {\def\ppgcosmo@defaultfont{\fontencoding{T1}\fontfamily{opensans-TLF}%
+       \fontseries{sb}\fontshape{it}\selectfont}}
+    {\PackageWarningNoLine{ppgcosmologo}{Open Sans not found (install the TeX
+       Live package opensans); using Helvetica}%
+     \def\ppgcosmo@defaultfont{\fontencoding{T1}\fontfamily{phv}%
+       \fontseries{m}\fontshape{sl}\selectfont}}
+\fi
+
+%% ------------------------------------------------------------ keys
+\newif\ifppgcosmo@short
+\pgfqkeys{/ppgcosmo}{
+  fontcolor/.is choice,
+  fontcolor/black/.code={\def\ppgcosmo@fc{black}\def\ppgcosmo@oc{white}},
+  fontcolor/white/.code={\def\ppgcosmo@fc{white}\def\ppgcosmo@oc{black}},
+  background/.is choice,
+  background/white/.code={\def\ppgcosmo@bg{white}},
+  background/black/.code={\def\ppgcosmo@bg{black}},
+  background/none/.code={\def\ppgcosmo@bg{none}},
+  version/.is choice,
+  version/large/.code={\ppgcosmo@shortfalse},
+  version/short/.code={\ppgcosmo@shorttrue},
+  height/.store in=\ppgcosmo@height,
+  outline width/.store in=\ppgcosmo@ow,
+  font/.store in=\ppgcosmo@font,
+}
+
+%% ------------------------------------------------------------ drawing
+% one arm, rotated by #1 degrees: outer edge out, inner edge back.
+% centre line P = r(cos p, sin p), r = exp(pi p/360) (p in deg, tip at p = 0);
+% the normal makes the constant angle atan(1/2) = 26.565 deg with the radius.
+\def\ppgcosmo@arm#1{%
+  plot[domain=-\ppgcosmo@turn:0, samples=180, variable=\p]
+    ({exp(pi*\p/360)*cos(\p+#1) - \ppgcosmo@hw*cos(\p+#1-26.565)},
+     {exp(pi*\p/360)*sin(\p+#1) - \ppgcosmo@hw*sin(\p+#1-26.565)})
+  -- plot[domain=0:-\ppgcosmo@turn, samples=180, variable=\p]
+    ({exp(pi*\p/360)*cos(\p+#1) + \ppgcosmo@hw*cos(\p+#1-26.565)},
+     {exp(pi*\p/360)*sin(\p+#1) + \ppgcosmo@hw*sin(\p+#1-26.565)})
+  -- cycle}
+
+% the gradient, centred at the current origin: 50bp <-> 1.2 R
+\def\ppgcosmo@gradient{%
+  \pgfmathsetmacro\ppgcosmo@k{1.2*\ppgcosmo@u/50bp}%
+  \pgftransformscale{\ppgcosmo@k}\pgflowlevelsynccm\pgfuseshading{\ppgcosmo@shade}}
+
+\newsavebox\ppgcosmo@box
+\newlength\ppgcosmo@u
+\def\ppgcosmo@white{white}\def\ppgcosmo@black{black}\def\ppgcosmo@none{none}
+
+\newcommand\ppgcosmologo[1][]{%
+  \begingroup
+  \let\ppgcosmo@font\ppgcosmo@defaultfont
+  \pgfqkeys{/ppgcosmo}{fontcolor=black, background=white, version=large,
+                       height=, outline width=, #1}%
+  % canvas (crop box) in units of R
+  \ifppgcosmo@short
+    % centred on the lettering (ink centre x = 0.6108, y = 0.4193);
+    % same size as the original short logo (1.2173 x 0.2916)
+    \def\ppgcosmo@xa{0.0021}\def\ppgcosmo@ya{0.2735}%
+    \def\ppgcosmo@xb{1.2194}\def\ppgcosmo@yb{0.5651}%
+    \ifx\ppgcosmo@height\pgfutil@empty\def\ppgcosmo@height{1cm}\fi
+  \else
+    \def\ppgcosmo@xa{0}\def\ppgcosmo@ya{0}%
+    \let\ppgcosmo@xb\ppgcosmo@W\let\ppgcosmo@yb\ppgcosmo@H
+    \ifx\ppgcosmo@height\pgfutil@empty\def\ppgcosmo@height{3cm}\fi
+  \fi
+  \pgfmathsetlength\ppgcosmo@u{(\ppgcosmo@height)/(\ppgcosmo@yb-\ppgcosmo@ya)}%
+  % outline: wide halo if it has the background colour, thin line otherwise
+  \ifx\ppgcosmo@ow\pgfutil@empty
+    \def\ppgcosmo@ow{0.0025}%
+    \ifx\ppgcosmo@oc\ppgcosmo@bg\def\ppgcosmo@ow{0.006}\fi
+    \ifx\ppgcosmo@bg\ppgcosmo@none\ifx\ppgcosmo@oc\ppgcosmo@white\def\ppgcosmo@ow{0.006}\fi\fi
+  \fi
+  \ifx\ppgcosmo@bg\ppgcosmo@black\def\ppgcosmo@shade{ppgcosmo@shadeK}%
+  \else\def\ppgcosmo@shade{ppgcosmo@shadeW}\fi
+  % lettering scaled to its box; the outline width is corrected for the scaling
+  \sbox\ppgcosmo@box{\ppgcosmo@font PPGCosmo}%
+  \pgfmathsetmacro\ppgcosmo@s{\ppgcosmo@tw*\ppgcosmo@u/\wd\ppgcosmo@box}%
+  \pgfmathsetlengthmacro\ppgcosmo@lw{2*\ppgcosmo@ow*\ppgcosmo@u/\ppgcosmo@s}%
+  \begin{tikzpicture}[x=\ppgcosmo@u, y=\ppgcosmo@u, baseline=(ppgcosmo@base)]
+    \coordinate (ppgcosmo@base) at (\ppgcosmo@xa,\ppgcosmo@ya);
+    \useasboundingbox (\ppgcosmo@xa,\ppgcosmo@ya) rectangle (\ppgcosmo@xb,\ppgcosmo@yb);
+    \ifx\ppgcosmo@bg\ppgcosmo@none\else
+      \fill[\ppgcosmo@bg] (\ppgcosmo@xa,\ppgcosmo@ya) rectangle (\ppgcosmo@xb,\ppgcosmo@yb);
+    \fi
+    \clip (\ppgcosmo@xa,\ppgcosmo@ya) rectangle (\ppgcosmo@xb,\ppgcosmo@yb);
+    % ---- galaxy: face-on drawing, flattened and tilted
+    \begin{scope}[shift={(\ppgcosmo@cx,\ppgcosmo@cy)}, rotate=\ppgcosmo@tilt,
+                  yscale=\ppgcosmo@flat]
+      \begin{scope}
+        \clip foreach \j in {0,...,5} {\ppgcosmo@arm{\ppgcosmo@tip+60*\j}};
+        \ppgcosmo@gradient
+      \end{scope}
+      \begin{scope}
+        \clip (0,0) circle (\ppgcosmo@core);
+        \ppgcosmo@gradient
+      \end{scope}
+    \end{scope}
+    % ---- lettering: outline (stroke) under the fill
+    \node[anchor=base west, inner sep=0pt, outer sep=0pt]
+      at (\ppgcosmo@tl,\ppgcosmo@tb)
+      {\scalebox{\ppgcosmo@s}{\ppgcosmo@font
+        \rlap{\textpdfrender{TextRenderingMode=Stroke, LineWidth=\ppgcosmo@lw,
+              LineJoinStyle=Round, StrokeColor=\ppgcosmo@oc}{PPGCosmo}}%
+        \textpdfrender{TextRenderingMode=Fill, FillColor=\ppgcosmo@fc}{PPGCosmo}}};
+  \end{tikzpicture}%
+  \endgroup
+}
+\endinput
