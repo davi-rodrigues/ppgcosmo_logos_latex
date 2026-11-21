@@ -13,7 +13,7 @@ or in output produced by running the code.
 Part 1 - Source code: MIT License
 ==============================================================================
 
-Applies to: ppgcosmologo.sty, ppgcosmologo-demo.tex, make-images.sh
+Applies to: ppgcosmologo.sty, make-images.sh
 
 Copyright (c) 2026 Davi C. Rodrigues
 
@@ -41,8 +41,8 @@ Part 2 - PPGCosmo Logo Usage Terms
 ==============================================================================
 
 Applies to: the PPGCosmo logo design (the galaxy symbol together with the
-"PPGCosmo" lettering), all files in the images/ folder, ppgcosmologo-demo.pdf,
-and any image of the logo produced with the code in Part 1.
+"PPGCosmo" lettering), all files in the images/ folder, and any image of the
+logo produced with the code in Part 1.
 
 The PPGCosmo logo was designed by Davi C. Rodrigues and is the official logo
 of the Programa de Pos-Graduacao em Astrofisica, Cosmologia e Gravitacao

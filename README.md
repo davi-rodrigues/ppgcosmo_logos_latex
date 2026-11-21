@@ -25,7 +25,6 @@ Ready-to-use **PNG and JPG images** are also provided in [`images/`](images/).
 | File | Description |
 | --- | --- |
 | `ppgcosmologo.sty` | LaTeX package that provides `\ppgcosmologo` |
-| `ppgcosmologo-demo.tex`, `ppgcosmologo-demo.pdf` | Short demo document and its output |
 | `make-images.sh` | Script that renders every variant as PNG/JPG |
 | `images/` | Pre-rendered images of all variants (600 dpi) |
 
@@ -90,9 +89,9 @@ Needs `pdflatex` (TeX Live, with `opensans`) and `pdftocairo` (from poppler).
 This repository uses **two different licenses**. See [`LICENSE`](LICENSE) for the
 full text.
 
-- **Code** (`ppgcosmologo.sty`, `ppgcosmologo-demo.tex`, `make-images.sh`):
+- **Code** (`ppgcosmologo.sty`, `make-images.sh`):
   [MIT License](LICENSE). You may reuse and adapt the code freely.
-- **The logo itself** (the design, the files in `images/`, the demo PDF and any
+- **The logo itself** (the design, the files in `images/` and any
   image the code produces): **not openly licensed**. The MIT License covers the
   code, not the logo it draws.
 
